@@ -31,7 +31,7 @@ def call(verb, channel, branch_name, build_url, job_name, build_number)
     def merge_hashes = sh(returnStdout: true, script:"git log --first-parent ${branch_name} --merges -n 1 --format='%P'").trim()
     def (base_commit, latest_commit) = merge_hashes.tokenize(' ')
     // List the author email and subject of all commits between the base (excluding) and the head (inclusive) of the latest merge commit
-    def commit_list=sh(returnStdout: true, script:"git log ${latest_commit} --not ${base_commit} --format='%ae %H %s'").trim()
+    def commit_list=sh(returnStdout: true, script:"git log ${latest_commit} --not ${base_commit} --format='%ae %H %s' --no-merges").trim()
     def remote_url = sh(returnStdout: true, script:"git config --get remote.origin.url").trim()
     remote_url = remote_url.replace('.git', '')
 
