@@ -51,22 +51,24 @@ def call(verb, channel, branch_name, build_url, job_name, build_number)
     }
 
     commits.each { commit ->
-        println("commit string: " + commit);
         def row = commit.split(' ', 3)
-        def author_email = row[0]
-        def hash = row[1]
-        def subject = row[2]
-        def slack_user_id = slackUserIdFromEmail(author_email)
 
-        blocks.push([
-            "type": "section",
-            "text": ["type": "mrkdwn","text": "*<${remote_url}/commit/${hash}|${subject}>*"]
-        ])
-        blocks.push([
-            "type": "context",
-            "elements": [["type": "mrkdwn","text": "By <@${slack_user_id}> <${author_email}>"]]
-        ])
-        blocks.push(["type": "divider"])
+        if (row.size() >= 3) {
+            def author_email = row[0]
+            def hash = row[1]
+            def subject = row[2]
+            def slack_user_id = slackUserIdFromEmail(author_email)
+
+            blocks.push([
+                "type": "section",
+                "text": ["type": "mrkdwn","text": "*<${remote_url}/commit/${hash}|${subject}>*"]
+            ])
+            blocks.push([
+                "type": "context",
+                "elements": [["type": "mrkdwn","text": "By <@${slack_user_id}> <${author_email}>"]]
+            ])
+            blocks.push(["type": "divider"])
+        }
     }
 
     if (total_commits_truncated > 0) {
